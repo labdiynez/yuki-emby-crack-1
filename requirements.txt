@@ -1,0 +1,2 @@
+pyinstaller==4.0
+tornado==6.0.4
