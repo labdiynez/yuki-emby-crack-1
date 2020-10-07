@@ -6,10 +6,6 @@ Windows简单白嫖Emby会员
 
 代码实现基于tornado+pyinstaller
 
-**注意：请务必注意你的代理设定，否则可能导致在Windows上出现修改host不生效问题**
-
-**注意：此方法仅限激活安装该程序后设备上的客户端/服务端激活**
-
 ## 使用效果
 
 > Emby Server
@@ -101,7 +97,7 @@ Windows简单白嫖Emby会员
 
 ### 关于本项目？
 
-项目基于Python tornado框架，寥寥几行无需多讲，无非是加载证书返回一个已激活的信息而已，搞这个东西的初衷也只是为了在windows上的激活更简单一些，经测试可以激活安装在windows上的Emby Server/Emby Theater，原理基于[白嫖一下Emby](https://imrbq.cn/exp/emby_hack.html) 。如非必要本项目一般不会再次更新，以及**不会**提供技术支持
+项目基于Python tornado框架，寥寥几行无需多讲，无非是加载证书创建web服务器返回一个已激活的信息而已。搞这个东西的初衷也只是为了在windows上的激活更简单一些，经测试可以激活安装在windows上的Emby Server/Emby Theater，原理基于[白嫖一下Emby](https://imrbq.cn/exp/emby_hack.html) 。如非必要本项目一般不会再次更新，以及**不会**提供技术支持
 
 ### 自行编译？
 
