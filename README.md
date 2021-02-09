@@ -123,3 +123,113 @@ pyinstaller -F -w main.py
 
 我也是偶然发现这个问题，实际上并不是说不能同时使用代理，翻找一下你使用的插件，只需要让你的插件不再代理`mb3admin.com`这个网址即可，例如我使用的Clash for Windows中在Settings里面就有设置系统代理bypass选项，只需要加一行`  - mb3admin.com`即可，如果你没在浏览器页面中看到小金标，看看是不是用了SwitchyOmega或者其他类似插件，如果有的话将`mb3admin.com`加入`不代理的地址列表`，然后刷新页面就能看到小金标啦
 
+### 根证书自签
+发现ubuntu下Ca证书一直导入失败，干脆自己签发了一个，参考[OpenSSL 自签 CA 及 SSL 证书](https://2heng.xin/2018/12/16/your-own-ca-with-openssl/)
+
+### 关于证书的信任问题，我直接写了个一个小脚本，你自己签发算了，window下，自己参考者命令改就行了
+
+#### 检查openssl设置
+创建或者检查/etc/ssl/openssl.cnf
+
+```bash
+
+[ CA_default ]
+ 
+dir             = ./demoCA              # Where everything is kept
+certs           = $dir/certs            # Where the issued certs are kept
+crl_dir         = $dir/crl              # Where the issued crl are kept
+database        = $dir/index.txt        # database index file.
+new_certs_dir   = $dir/newcerts         # default place for new certs.
+certificate     = $dir/cacert.pem       # The CA certificate
+serial          = $dir/serial           # The current serial number
+crlnumber       = $dir/crlnumber        # the current crl number
+crl             = $dir/crl.pem          # The current CRL
+private_key     = $dir/private/cakey.pem# The private key
+RANDFILE        = $dir/private/.rand    # private random number file
+
+```
+
+#### 签发自定义Ca
+打开root.conf 更改你感兴趣的地方,然后运行./selfsign_ca.sh，一路回车确定完成
+```bash
+./selfsign_ca.sh
+
+初始化Ca目录
+
+
+生成 CA 根密钥
+
+Generating RSA private key, 2048 bit long modulus (2 primes)
+.............................+++++
+...+++++
+e is 65537 (0x010001)
+
+自签发 CA 根证书
+
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [Shanghai]:
+Locality Name (eg, city) [Shanghai]:
+Organization Name (eg, company) [Mashiro LLC]:
+Common Name (e.g. server FQDN or YOUR name) [Mashiro Internet Fake Authority CA]:
+
+重命名ca, pem == crt in linux
+
+'./demoCA/private/cakey.pem' -> './demoCA/private/cakey.crt'
+
+Ca目录
+
+demoCA/
+├── cacert.pem
+├── index.txt
+├── newcerts
+├── private
+│   ├── cakey.crt
+│   └── cakey.pem
+└── serial
+
+2 directories, 5 files
+
+```
+
+#### 建立配置文件
+进入到sign目录，建立一个你对应的域名目录,并复制server.conf到对应目录,修改对应条目
+```bash
+mkdir mb3admin.com
+cp server.cf mb3admin.com/server.conf
+```
+更新下列参数
+```bash
+commonName_default          = *.mb3admin.com
+DNS.1   = *.mb3admin.com
+DNS.2   = mb3admin.com
+```
+#### 生成根证书
+```bash
+selfsign_host.sh mb3admin.com
+```` 
+####  证书格式的转换
+
+这里我用的linux，格式一样，如果遇到不一致，可以参考如下解决[证书格式转换DER，PEM等](https://blog.csdn.net/xiangguiwang/article/details/76400805/)
+
+### Chrome 根证书的导入
+
+依次点击设置->隐私设置与安全性->安全->安全证书管理->授权机构->导入
+
+![Chrome:1-3](/images/i-chrome-1.png)
+![Chrome:4](/images/i-chrome-2.png)
+![Chrome:5-6](/images/i-chrome-3.png)
+![Chrome:7-8](/images/i-chrome-4.png)
+![Chrome:9-10](/images/i-chrome-5.png)
+
+然后可以用浏览器打开https://mb3admin.com 验证是否有错误
+
+![Chrome:11](/images/i-chrome-6.png)
+
+
