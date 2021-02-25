@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @author: MitsuhaYuki
-import os.path
+import sys
+import os
 import logging
 import tornado.ioloop
 import tornado.httpserver
@@ -65,10 +66,20 @@ def make_app():
 
 
 if __name__ == "__main__":
+    # detect if running in bundle resource mode
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+
+    crt_file = base_path + "/cert/server.crt"
+    key_file = base_path + "/cert/server.key"
+
+    # load ssl license and create server
     app = make_app()
     http_server = tornado.httpserver.HTTPServer(app, ssl_options={
-        "certfile": os.path.join(os.path.abspath("."), "cert/server.crt"),
-        "keyfile": os.path.join(os.path.abspath("."), "cert/server.key"),
+        "certfile": os.path.join(os.path.abspath("."), crt_file),
+        "keyfile": os.path.join(os.path.abspath("."), key_file),
     })
     http_server.listen(443)
     tornado.ioloop.IOLoop.current().start()
