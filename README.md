@@ -53,11 +53,13 @@ Windows客户端包括**Emby Theater**、**Emby Web Control**(即浏览器页面
 进入`C:\Windows\System32\drivers\etc`目录，修改hosts文件，**在文件末尾增加**如下内容：
 
 ```
-127.0.0.1 mb3admin.com
+激活服务器IP mb3admin.com
 
 ```
 
-> 注意此处`127.0.0.1 mb3admin.com`后面需要加一个空行，不然有可能会出现修改不生效的神奇问题
+其中激活服务器的IP填上一步运行`main.exe`的机器的**局域网**IP，如：`192.168.1.1 mb3admin.com`，如果你的激活服务器与被激活的客户端在同一台机器上，则填写：`127.0.0.1 mb3admin.com`
+
+> 注意此处`激活服务器IP mb3admin.com`后面需要加一个空行，不然有可能会出现修改不生效的神奇问题
 
 #### 安装证书
 
